@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ELITE | PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --metal-bg: #e0e0e0;
+            --metal-shadow: #bebebe;
+            --metal-light: #ffffff;
+            --text-color: #444;
+            --accent: #2ecc71;
+            --danger: #e74c3c;
+            --gold: #f1c40f;
+            --dark-card: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+
+        body { 
+            background-color: var(--metal-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding-bottom: 110px;
+        }
+
+        /* --- MINI HEADER --- */
+        .user-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info h2 { font-size: 16px; color: #444; }
+        .user-info p { font-size: 10px; color: #888; font-weight: 700; }
+        
+        .header-right { display: flex; align-items: center; gap: 10px; }
+
+        .wallet-badge, .online-badge {
+            background: var(--metal-bg); padding: 8px 15px; border-radius: 50px;
+            box-shadow: 5px 5px 10px var(--metal-shadow), -5px -5px 10px var(--metal-light);
+            font-size: 11px; font-weight: 700; display: flex; align-items: center;
+        }
+        .wallet-badge { color: var(--accent); }
+        .online-badge { color: #666; gap: 6px; }
+
+        /* --- ONLINE DOT ANIMATION --- */
+        .online-dot { 
+            width: 7px; 
+            height: 7px; 
+            background: var(--accent); 
+            border-radius: 50%; 
+            display: inline-block; 
+            position: relative;
+        }
+        .online-dot::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: onlinePulse 2s infinite;
+            left: 0;
+            top: 0;
+        }
+        @keyframes onlinePulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3.5); opacity: 0; }
+        }
+
+        /* --- SEARCH & FILTERS --- */
+        .search-area { padding: 0 20px; margin-bottom: 20px; }
+        .search-box {
+            display: flex; align-items: center; padding: 12px 20px;
+            background: var(--metal-bg); border-radius: 20px;
+            box-shadow: inset 4px 4px 8px var(--metal-shadow), inset -4px -4px 8px var(--metal-light);
+        }
+        .search-box input { border: none; background: none; outline: none; margin-left: 10px; font-size: 13px; width: 100%; }
+
+        .filter-tabs {
+            display: flex; gap: 15px; padding: 0 20px; margin-bottom: 25px; overflow-x: auto; scrollbar-width: none;
+        }
+        .tab {
+            padding: 10px 20px; border-radius: 15px; background: var(--metal-bg);
+            box-shadow: 5px 5px 10px var(--metal-shadow), -5px -5px 10px var(--metal-light);
+            font-size: 11px; font-weight: 700; color: #777; white-space: nowrap; cursor: pointer;
+        }
+        .tab.active { box-shadow: inset 3px 3px 6px var(--metal-shadow); color: var(--accent); }
+
+        /* --- DYNAMIC SLIDING BANNER --- */
+        .banner-wrapper { padding: 0 20px; margin-bottom: 30px; }
+        .banner-container {
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px;
+            padding: 10px 5px; scrollbar-width: none; scroll-behavior: smooth;
+        }
+        .banner-container::-webkit-scrollbar { display: none; }
+        .banner-card {
+            min-width: calc(100% - 5px); height: 150px; border-radius: 25px;
+            scroll-snap-align: center; position: relative; overflow: hidden;
+            box-shadow: 10px 10px 20px var(--metal-shadow);
+            background: #333; color: white;
+        }
+        .banner-overlay {
+            background: rgba(0,0,0,0.4); width: 100%; height: 100%;
+            padding: 25px; display: flex; flex-direction: column; justify-content: center;
+        }
+        .banner-content h2 { font-size: 18px; text-transform: uppercase; margin-bottom: 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .banner-content p { font-size: 10px; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+
+        /* --- UPDATED TOURNAMENT CARDS --- */
+        .section-title { font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; margin: 0 25px 15px; letter-spacing: 1px; }
+        
+        .room-card {
+            background: var(--metal-bg); border-radius: 25px; padding: 15px; margin: 0 20px 25px;
+            box-shadow: 8px 8px 16px var(--metal-shadow), -8px -8px 16px var(--metal-light);
+            position: relative;
+        }
+        
+        .match-banner {
+            width: 100%; height: 130px; border-radius: 18px; object-fit: cover;
+            margin-bottom: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .card-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .match-title { font-size: 14px; font-weight: 700; color: #444; }
+        .mode-tag { font-size: 9px; font-weight: 700; background: #dcdcdc; color: #777; padding: 3px 10px; border-radius: 6px; }
+
+        .sunken-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .stat-box {
+            background: var(--metal-bg); padding: 10px 5px; border-radius: 15px; text-align: center;
+            box-shadow: inset 3px 3px 6px var(--metal-shadow), inset -3px -3px 6px var(--metal-light);
+        }
+        .stat-box i { font-size: 12px; color: var(--accent); display: block; margin-bottom: 4px; }
+        .stat-box span { font-size: 8px; font-weight: 700; color: #999; display: block; text-transform: uppercase; }
+        .stat-box b { font-size: 10px; color: #444; }
+
+        .progress-container { margin-bottom: 15px; }
+        .progress-text { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #999; margin-bottom: 5px; }
+        .progress-bar { height: 6px; background: var(--metal-bg); border-radius: 10px; box-shadow: inset 2px 2px 5px var(--metal-shadow); overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #444, #222); border-radius: 10px; }
+
+        .card-footer-flex { display: flex; justify-content: space-between; align-items: center; padding-top: 5px; }
+        .entry-fee-text { font-size: 11px; font-weight: 700; color: #666; }
+        .entry-fee-text b { color: var(--accent); font-size: 14px; margin-left: 5px; }
+
+        .btn-join {
+            background: #444; color: white; padding: 10px 22px; border-radius: 12px; border: none;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            box-shadow: 4px 4px 8px var(--metal-shadow); cursor: pointer; transition: 0.2s;
+        }
+        .btn-join:active { transform: scale(0.95); box-shadow: none; }
+
+        /* --- NAV --- */
+        nav {
+            position: fixed; bottom: 20px; left: 20px; right: 20px; height: 75px;
+            background: var(--metal-bg); border-radius: 25px;
+            box-shadow: 10px 10px 30px var(--metal-shadow), -10px -10px 30px var(--metal-light);
+            display: flex; justify-content: space-around; align-items: center; z-index: 100;
+        }
+        .nav-item { color: #999; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px;}
+        .nav-item i { font-size: 20px; }
+        .nav-item span { font-size: 9px; font-weight: 700; text-transform: uppercase; }
+        .nav-item.active { color: #444; }
+
+        /* --- MODAL --- */
+        .modal-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--metal-bg); z-index: 2000;
+            display: none; flex-direction: column;
+            overflow-y: auto; padding-bottom: 100px;
+            animation: slideIn 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
+        }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        .modal-header-nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px; position: sticky; top: 0; background: var(--metal-bg); z-index: 100;
+        }
+        .circle-btn {
+            width: 45px; height: 45px; border-radius: 50%; border: none;
+            background: var(--metal-bg); color: #444;
+            box-shadow: 5px 5px 10px var(--metal-shadow), -5px -5px 10px var(--metal-light);
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+
+        .tourney-hero { padding: 0 20px; position: relative; }
+        .hero-banner {
+            width: 100%; height: 220px; border-radius: 30px; object-fit: cover;
+            box-shadow: 15px 15px 30px var(--metal-shadow);
+        }
+        .hero-badge {
+            position: absolute; top: 15px; right: 35px;
+            background: var(--accent); color: white; padding: 5px 15px;
+            border-radius: 12px; font-size: 10px; font-weight: 700; box-shadow: 0 5px 15px rgba(46,204,113,0.4);
+        }
+
+        .content-section { padding: 25px 20px; }
+        .tourney-title { font-size: 22px; color: #333; margin-bottom: 5px; }
+        .tourney-subtitle { font-size: 12px; color: #888; margin-bottom: 25px; display: block; }
+
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px;
+        }
+        .stat-item {
+            background: var(--metal-bg); padding: 15px 10px; border-radius: 20px; text-align: center;
+            box-shadow: 5px 5px 10px var(--metal-shadow), -5px -5px 10px var(--metal-light);
+        }
+        .stat-item i { display: block; font-size: 18px; color: var(--accent); margin-bottom: 8px; }
+        .stat-item span { font-size: 9px; color: #999; display: block; text-transform: uppercase; }
+        .stat-item b { font-size: 12px; color: #444; }
+
+        .premium-card {
+            background: var(--metal-bg); border-radius: 25px; padding: 20px;
+            box-shadow: inset 6px 6px 12px var(--metal-shadow), inset -6px -6px 12px var(--metal-light);
+            margin-bottom: 25px;
+        }
+        .card-label { font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 15px; display: block; text-transform: uppercase; }
+        
+        .prize-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .prize-row:last-child { border: none; }
+        .rank { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
+        .rank i { color: var(--gold); }
+        .amount { font-weight: 700; color: #444; }
+
+        .rules-box { list-style: none; }
+        .rules-box li {
+            position: relative; padding-left: 30px; font-size: 11px;
+            color: #666; margin-bottom: 12px; line-height: 1.5;
+        }
+        .rules-box li::before {
+            content: "\f058"; font-family: "Font Awesome 5 Free"; font-weight: 900;
+            position: absolute; left: 0; color: var(--accent); font-size: 14px;
+        }
+
+        .modal-footer {
+            position: fixed; bottom: 0; left: 0; width: 100%; padding: 20px;
+            background: rgba(224, 224, 224, 0.9); backdrop-filter: blur(10px);
+            z-index: 110;
+        }
+        .pay-join-btn {
+            width: 100%; padding: 18px; border-radius: 20px; border: none;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white; font-weight: 700; font-size: 14px; text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* NEW Participant List Styling */
+        .participant-item {
+            display: flex; justify-content: space-between; padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 13px; color: #555;
+        }
+
+        /* TOAST STYLE */
+        #toast {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            background: #333; color: #fff; padding: 12px 25px; border-radius: 50px;
+            font-size: 12px; font-weight: 700; z-index: 10000; display: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        /* IDP COPY ICON */
+        .copy-icon { color: var(--accent); cursor: pointer; margin-left: 10px; font-size: 14px; }
+        /* TIMER STYLE */
+        .timer-box { text-align: center; margin-top: 15px; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 15px; }
+        .timer-display { font-size: 20px; font-weight: 700; color: var(--danger); letter-spacing: 2px; }
+
+    </style>
+</head>
+<body>
+
+    <div id="toast">Message here</div>
+
+    <!-- USER STATS HEADER -->
+    <div class="user-header">
+        <div class="user-info">
+            <p>Welcome back,</p>
+            <h2 id="user-display-name">Loading...</h2>
+        </div>
+        <div class="header-right">
+            <div class="online-badge">
+                <span class="online-dot"></span>
+                <i class="fas fa-users" style="margin-left: 5px;"></i> <span id="online-users-count" style="margin-left: 3px;">1</span>
+            </div>
+            <div class="wallet-badge">
+                <i class="fas fa-coins"></i> ₹<span id="header-bal">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="search-area">
+        <div class="search-box">
+            <i class="fas fa-search" style="color: #aaa;"></i>
+            <input type="text" id="searchInput" placeholder="Search Tournament...">
+        </div>
+    </div>
+
+    <!-- DYNAMIC BANNERS -->
+    <div class="banner-wrapper">
+        <div class="banner-container" id="bannerSlider">
+            <!-- Loading Banners... -->
+            <p style="text-align: center; font-size: 10px; color: #999;">Loading Offers...</p>
+        </div>
+    </div>
+
+    <!-- FILTER TABS -->
+    <div class="filter-tabs" id="filter-tabs">
+        <div class="tab active" data-filter="All Matches">All Matches</div>
+        <div class="tab" data-filter="SOLO">Solo</div>
+        <div class="tab" data-filter="DUO">Duo</div>
+        <div class="tab" data-filter="SQUAD">Squad</div>
+        <div class="tab" data-filter="T1 Scrims">T1 Scrims</div>
+    </div>
+
+    <div class="section-title">Live Tournaments</div>
+
+    <!-- ROOM LIST (DYNAMIC) -->
+    <div id="room-container">
+        <p style="text-align: center; padding: 20px; color: #888; font-size: 12px;">Searching for live matches...</p>
+    </div>
+
+    <!-- MODAL -->
+    <div id="detailModal" class="modal-screen">
+        <div class="modal-header-nav">
+            <button class="circle-btn" onclick="closeTourneyDetails()"><i class="fas fa-chevron-left"></i></button>
+            <span style="font-weight: 700; font-size: 14px; color: #555;">Match Details</span>
+            <button class="circle-btn"><i class="fas fa-share-alt"></i></button>
+        </div>
+        <div class="tourney-hero">
+            <img src="" class="hero-banner" id="modal-banner">
+            <span class="hero-badge">MOBILE ONLY</span>
+        </div>
+        <div class="content-section">
+            <h1 class="tourney-title" id="mTitle">Match Name</h1>
+            
+            <!-- IDP SECTION (Visible only if joined) -->
+            <div id="idp-container" style="display: none; margin-bottom: 25px;">
+                <div class="premium-card" style="background: #333; color: white; border: 1px solid var(--accent);">
+                    <span class="card-label" style="color: var(--accent);">Room Credentials</span>
+                    <p style="font-size: 14px; margin-bottom: 8px;">Room ID: <b id="modal-room-id">--</b> <i class="fas fa-copy copy-icon" onclick="copyToClipboard('modal-room-id')"></i></p>
+                    <p style="font-size: 14px;">Password: <b id="modal-room-pass">--</b> <i class="fas fa-copy copy-icon" onclick="copyToClipboard('modal-room-pass')"></i></p>
+                    
+                    <!-- COUNTDOWN TIMER -->
+                    <div class="timer-box">
+                        <span style="color: #888; font-size: 10px; display: block; margin-bottom: 5px;">MATCH STARTS IN</span>
+                        <div class="timer-display" id="modal-timer">00:00:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item"><i class="fas fa-map-marked-alt"></i><span>Map</span><b id="modal-map">Erangel</b></div>
+                <div class="stat-item"><i class="fas fa-users"></i><span>Mode</span><b id="modal-mode">Squad</b></div>
+                <div class="stat-item"><i class="fas fa-eye"></i><span>View</span><b id="modal-view">TPP</b></div>
+            </div>
+            <div class="premium-card">
+                <span class="card-label"><i class="fas fa-trophy"></i> Prize Distribution</span>
+                <div class="prize-row"><div class="rank"><i class="fas fa-medal"></i> Total Prize</div><div class="amount" id="modal-prize">₹0</div></div>
+            </div>
+
+            <!-- JOINED PLAYERS LIST (Visible only if joined) -->
+            <div id="participants-section" style="display: none;">
+                <div class="premium-card">
+                    <span class="card-label"><i class="fas fa-users"></i> Joined Players</span>
+                    <div id="participants-list">
+                        <p style="font-size: 11px; color: #aaa;">Loading list...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="premium-card">
+                <span class="card-label"><i class="fas fa-list-ul"></i> Match Rules</span>
+                <ul class="rules-box">
+                    <li>Room ID and Password will be sent via Notification and Wallet.</li>
+                    <li>Teaming, Hacking or use of Emulators will result in permanent Ban.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="pay-join-btn" id="final-join-btn">
+                <span id="mFee">Pay ₹50</span>
+                <span id="mBtnText">Join Match <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAV BAR -->
+    <nav>
+        <a href="room.html" class="nav-item active"><i class="fas fa-gamepad"></i><span>Room</span></a>
+        <a href="scrims.html" class="nav-item"><i class="fas fa-trophy"></i><span>All Chat</span></a>
+        <a href="wallet.html" class="nav-item"><i class="fas fa-wallet"></i><span>Wallet</span></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+    </nav>
+
+    <!-- FIREBASE INTEGRATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, update, set, push, onDisconnect, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUv-QHXMF1vfI7faSTOcQ6WdtZgXjkdGM",
+            authDomain: "elite-pro-de7e8.firebaseapp.com",
+            databaseURL: "https://elite-pro-de7e8-default-rtdb.firebaseio.com",
+            projectId: "elite-pro-de7e8",
+            storageBucket: "elite-pro-de7e8.firebasestorage.app",
+            messagingSenderId: "651793396398",
+            appId: "1:651793396398:web:0148327f711c3062a7733f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- SESSION FIX: Get User Phone ---
+        const userPhone = localStorage.getItem('userPhone');
+        if(!userPhone) { window.location.href = "login.html"; }
+
+        let userTotalBal = 0;
+        let userDepBal = 0;
+        let userWinBal = 0; 
+        let userName = "User";
+        let currentFilter = "All Matches";
+        let userJoinedMatches = {};
+        let timerInterval;
+
+        // --- FETCH USER PERSONAL DATA ---
+        onValue(ref(db, `users/${userPhone}`), (snap) => {
+            if(snap.exists()){
+                const userData = snap.val();
+                userName = userData.profile.name;
+                document.getElementById('user-display-name').innerText = userName;
+                
+                // Wallet scoped to personal phone number
+                userTotalBal = userData.wallet.total_bal || 0;
+                userDepBal = userData.wallet.dep_bal || 0;
+                userWinBal = userData.wallet.win_bal || 0;
+                document.getElementById('header-bal').innerText = userTotalBal.toLocaleString('en-IN');
+                
+                // Joined matches scoped to personal phone number
+                userJoinedMatches = userData.joined_matches || {};
+                loadTournaments();
+            }
+        });
+
+        // --- PRESENCE SYSTEM (ONLINE USERS) ---
+        const onlineUsersRef = ref(db, 'online_users');
+        const connectedRef = ref(db, '.info/connected');
+
+        onValue(connectedRef, (snap) => {
+            if (snap.val() === true) {
+                const myPresenceRef = push(onlineUsersRef);
+                onDisconnect(myPresenceRef).remove();
+                set(myPresenceRef, true);
+            }
+        });
+
+        onValue(onlineUsersRef, (snapshot) => {
+            const count = snapshot.numChildren() || 1;
+            document.getElementById('online-users-count').innerText = count;
+        });
+
+        window.showToast = (msg) => {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2500);
+        };
+
+        window.copyToClipboard = (id) => {
+            const text = document.getElementById(id).innerText;
+            if(text === "--" || text.includes("Soon")) return showToast("Not available yet!");
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Copied to Clipboard!");
+            });
+        };
+
+        function startTimer(targetTime) {
+            clearInterval(timerInterval);
+            const timerDisplay = document.getElementById('modal-timer');
+            if(!targetTime) { timerDisplay.innerText = "00:00:00"; return; }
+
+            timerInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const diff = targetTime - now;
+
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.innerText = "STARTED";
+                    return;
+                }
+
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                timerDisplay.innerText = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            }, 1000);
+        }
+
+        window.openTourneyDetails = (key, name, fee, map, mode, view, prize, img, filled, total, isJoined, rId, rPass, startTime) => {
+            try {
+                document.getElementById('mTitle').innerText = name;
+                document.getElementById('modal-map').innerText = map;
+                document.getElementById('modal-mode').innerText = mode;
+                document.getElementById('modal-view').innerText = view;
+                document.getElementById('modal-prize').innerText = "₹" + prize;
+                document.getElementById('modal-banner').src = img || "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80";
+                
+                const mFeeSpan = document.getElementById('mFee');
+                const mBtnTextSpan = document.getElementById('mBtnText');
+                const joinBtn = document.getElementById('final-join-btn');
+                const idpContainer = document.getElementById('idp-container');
+                const participantsSection = document.getElementById('participants-section');
+
+                if (isJoined) {
+                    mFeeSpan.innerText = "JOINED";
+                    mBtnTextSpan.innerHTML = 'Already Joined <i class="fas fa-check-circle" style="margin-left: 10px;"></i>';
+                    joinBtn.style.background = "#444";
+                    joinBtn.onclick = function() { showToast("You are already joined!"); };
+                    
+                    idpContainer.style.display = 'block';
+                    document.getElementById('modal-room-id').innerText = rId || "Updating Soon...";
+                    document.getElementById('modal-room-pass').innerText = rPass || "Updating Soon...";
+
+                    participantsSection.style.display = 'block';
+                    loadParticipants(key);
+                    startTimer(startTime);
+                } else {
+                    idpContainer.style.display = 'none';
+                    participantsSection.style.display = 'none';
+                    mFeeSpan.innerText = "Pay ₹" + fee;
+                    mBtnTextSpan.innerHTML = 'Join Match <i class="fas fa-arrow-right" style="margin-left: 10px;"></i>';
+                    joinBtn.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)";
+                    joinBtn.onclick = function() {
+                        window.confirmPayment(key, fee, filled, total);
+                    };
+                    clearInterval(timerInterval);
+                }
+
+                document.getElementById('detailModal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                console.error("Error in openTourneyDetails:", error);
+            }
+        };
+
+        window.closeTourneyDetails = () => {
+            document.getElementById('detailModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            clearInterval(timerInterval);
+        };
+
+        window.confirmPayment = async (roomKey, fee, currentFilled, totalSlots) => {
+            if (userTotalBal < fee) return alert("Insufficient Balance! Please deposit money.");
+
+            if (confirm(`Do you want to pay ₹${fee} to join this match?`)) {
+                try {
+                    // --- DEDUCTION LOGIC SCOPED TO USER ---
+                    let newDep = 0;
+                    let newWin = 0;
+                    let feeAmt = Number(fee);
+
+                    if (userDepBal >= feeAmt) {
+                        newDep = userDepBal - feeAmt;
+                        newWin = userWinBal;
+                    } else {
+                        let remaining = feeAmt - userDepBal;
+                        newDep = 0;
+                        newWin = userWinBal - remaining;
+                    }
+
+                    const newTotal = newDep + newWin;
+                    
+                    // UPDATE PERSONAL WALLET
+                    await update(ref(db, `users/${userPhone}/wallet`), { 
+                        total_bal: newTotal, 
+                        dep_bal: newDep,
+                        win_bal: newWin 
+                    });
+                    
+                    // UPDATE GLOBAL TOURNAMENT STATUS
+                    await update(ref(db, `tournaments/${roomKey}`), { filled: currentFilled + 1 });
+                    
+                    // MARK AS JOINED IN PERSONAL DATA
+                    await set(ref(db, `users/${userPhone}/joined_matches/${roomKey}`), true);
+                    
+                    // ADD TO PARTICIPANTS LIST
+                    await set(ref(db, `participants/${roomKey}/${userName.replace(/\./g, '_')}`), true);
+
+                    showToast("Joined Successfully!");
+                    window.closeTourneyDetails();
+                } catch (e) {
+                    showToast("Join failed!");
+                }
+            }
+        };
+
+        function loadParticipants(matchKey) {
+            const listDiv = document.getElementById('participants-list');
+            onValue(ref(db, `participants/${matchKey}`), (snapshot) => {
+                const players = snapshot.val();
+                if (!players) {
+                    listDiv.innerHTML = `<p style="font-size: 11px; color: #aaa;">No one has joined yet.</p>`;
+                    return;
+                }
+                let html = "";
+                let count = 1;
+                Object.keys(players).forEach(name => {
+                    html += `<div class="participant-item"><span>${count}. ${name.replace(/_/g, '.')}</span><i class="fas fa-check-circle" style="color:var(--accent)"></i></div>`;
+                    count++;
+                });
+                listDiv.innerHTML = html;
+            });
+        }
+
+        // --- NEW: DYNAMIC BANNERS LOGIC ---
+        onValue(ref(db, 'banners'), (snapshot) => {
+            const data = snapshot.val();
+            const slider = document.getElementById('bannerSlider');
+            if (!data) {
+                slider.innerHTML = `<div class="banner-card"><div class="banner-overlay"><h2>No Offers</h2><p>Stay tuned for new matches!</p></div></div>`;
+                return;
+            }
+            
+            let html = "";
+            Object.keys(data).forEach(key => {
+                const b = data[key];
+                html += `
+                    <div class="banner-card" style="background: url('${b.image}') center/cover no-repeat;">
+                        <div class="banner-overlay">
+                            <div class="banner-content">
+                                <h2>${b.title}</h2>
+                                <p>${b.subtitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            slider.innerHTML = html;
+        });
+
+        // --- MATCH CARD RENDERING ---
+        function loadTournaments() {
+            const roomContainer = document.getElementById('room-container');
+            onValue(ref(db, 'tournaments'), (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    roomContainer.innerHTML = `<p style="text-align: center; padding: 20px; color: #888; font-size: 12px;">No matches live right now.</p>`;
+                    return;
+                }
+                roomContainer.innerHTML = ""; 
+                Object.keys(data).forEach(key => {
+                    const room = data[key];
+                    if (currentFilter !== "All Matches" && room.mode !== currentFilter) return;
+                    const filled = room.filled || 0;
+                    const total = room.slots || 100;
+                    const percent = Math.floor((filled / total) * 100);
+                    const isJoined = !!userJoinedMatches[key];
+
+                    roomContainer.innerHTML += `
+                    <div class="room-card" style="${isJoined ? 'border: 1px solid var(--accent);' : ''}">
+                        <img src="${room.image || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80'}" class="match-banner">
+                        <div class="card-header-flex">
+                            <h3 class="match-title">${room.title}</h3>
+                            <span class="mode-tag">${room.mode.toUpperCase()}</span>
+                        </div>
+                        <div class="sunken-stats-row">
+                            <div class="stat-box"><i class="fas fa-clock"></i><span>Time</span><b>${room.time}</b></div>
+                            <div class="stat-box"><i class="fas fa-map"></i><span>Map</span><b>${room.map.toUpperCase()}</b></div>
+                            <div class="stat-box"><i class="fas fa-trophy"></i><span>Prize</span><b>₹${room.prize}</b></div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-text"><span>Filled: ${filled}/${total}</span><span>${percent}%</span></div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: ${percent}%;"></div></div>
+                        </div>
+                        <div class="card-footer-flex">
+                            <div class="entry-fee-text">Entry Fee: <b>${room.fee == 0 ? 'FREE' : '₹'+room.fee}</b></div>
+                            <button class="btn-join" style="${isJoined ? 'background: #888;' : ''}" 
+                                onclick="window.openTourneyDetails('${key}', '${room.title.replace(/'/g, "\\'")}', ${room.fee}, '${room.map}', '${room.mode}', '${room.view}', '${room.prize}', '${room.image}', ${filled}, ${total}, ${isJoined}, '${room.roomID || ''}', '${room.roomPass || ''}', ${room.startTime || 0})">
+                                ${isJoined ? 'Joined' : 'Register'}
+                            </button>
+                        </div>
+                    </div>`;
+                });
+            });
+        }
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.getAttribute('data-filter');
+                loadTournaments();
+            });
+        });
+
+        const slider = document.getElementById('bannerSlider');
+        let index = 0;
+        setInterval(() => {
+            if(slider && slider.children.length > 0){
+                index = (index + 1) % slider.children.length;
+                slider.scrollTo({ left: slider.offsetWidth * index, behavior: 'smooth' });
+            }
+        }, 4000);
+    </script>
+</body>
+</html>

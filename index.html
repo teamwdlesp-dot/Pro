@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ELITE PRO | AUTH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+<script>
+    // Page load hone se pehle check karega
+    if (localStorage.getItem('userPhone')) {
+        window.location.href = "room.html";
+    }
+</script>
+
+    <style>
+        :root {
+            --metal-bg: #e0e0e0;
+            --metal-shadow: #bebebe;
+            --metal-light: #ffffff;
+            --text-color: #444;
+            --accent: #2ecc71;
+            --error: #e74c3c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+
+        body { 
+            background-color: var(--metal-bg);
+            height: 100vh; width: 100vw;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; margin: 0;
+            position: relative;
+        }
+
+        /* --- 1. PREMIUM BACKGROUND ANIMATION --- */
+        .bg-animate {
+            position: absolute; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        .blob {
+            position: absolute; width: 300px; height: 300px;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(52, 152, 219, 0.1));
+            filter: blur(50px); border-radius: 50%;
+            animation: move 20s infinite alternate;
+        }
+        @keyframes move {
+            from { transform: translate(-20%, -20%); }
+            to { transform: translate(120%, 120%); }
+        }
+
+        /* --- 2. CARD ENTRANCE ANIMATION --- */
+        .auth-container {
+            width: 90%; max-width: 340px; background: var(--metal-bg);
+            padding: 30px 20px; border-radius: 30px;
+            box-shadow: 15px 15px 30px var(--metal-shadow), -15px -15px 30px var(--metal-light);
+            z-index: 5; text-align: center;
+            animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .logo-icon {
+            width: 55px; height: 55px; background: var(--metal-bg);
+            margin: 0 auto 15px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 6px 6px 12px var(--metal-shadow), -6px -6px 12px var(--metal-light);
+            color: var(--text-color); font-size: 22px;
+            animation: rotateLogo 10s linear infinite;
+        }
+        @keyframes rotateLogo { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+
+        .auth-tabs {
+            display: flex; background: var(--metal-bg); padding: 4px; border-radius: 15px;
+            box-shadow: inset 4px 4px 8px var(--metal-shadow), inset -4px -4px 8px var(--metal-light);
+            margin-bottom: 25px;
+        }
+        .tab-btn {
+            flex: 1; padding: 12px; border: none; border-radius: 12px;
+            background: transparent; color: #888; font-weight: 700; font-size: 11px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn.active {
+            background: var(--metal-bg); color: var(--text-color);
+            box-shadow: 3px 3px 6px var(--metal-shadow), -3px -3px 6px var(--metal-light);
+        }
+
+        .form-section { display: none; text-align: left; }
+        .form-section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(15px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* --- 3. INPUT FOCUS ANIMATION --- */
+        .input-box {
+            width: 100%; padding: 14px 18px; border: none; outline: none;
+            background: var(--metal-bg); border-radius: 15px;
+            box-shadow: inset 5px 5px 10px var(--metal-shadow), inset -5px -5px 10px var(--metal-light);
+            margin-top: 5px; font-weight: 600; color: #444; font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .input-box:focus {
+            box-shadow: 5px 5px 10px var(--metal-shadow), -5px -5px 10px var(--metal-light);
+            transform: translateY(-2px);
+        }
+
+        /* --- 4. BUTTON SHINE ANIMATION --- */
+        .submit-btn {
+            position: relative; overflow: hidden;
+            width: 100%; padding: 15px; border: none; border-radius: 15px;
+            background: #333; color: white; font-weight: 700;
+            text-transform: uppercase; margin-top: 10px; cursor: pointer;
+            box-shadow: 5px 5px 15px var(--metal-shadow); font-size: 13px;
+        }
+        .submit-btn::after {
+            content: ''; position: absolute; top: -50%; left: -60%;
+            width: 20%; height: 200%; background: rgba(255,255,255,0.2);
+            transform: rotate(30deg); transition: 0.5s;
+        }
+        .submit-btn:hover::after { left: 120%; transition: 0.5s; }
+        .submit-btn:active { transform: scale(0.98); }
+
+        /* --- POPUP STYLES --- */
+        #popup-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px); z-index: 200000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .popup-card {
+            width: 80%; max-width: 280px; background: var(--metal-bg);
+            padding: 25px; border-radius: 25px; text-align: center;
+            box-shadow: 20px 20px 40px var(--metal-shadow), -20px -20px 40px var(--metal-light);
+            transform: scale(0.7); opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .popup-card.show { transform: scale(1); opacity: 1; }
+        .popup-icon-box {
+            width: 60px; height: 60px; margin: 0 auto 15px;
+            background: var(--metal-bg); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 5px 5px 10px var(--metal-shadow), -5px -5px 10px var(--metal-light);
+            font-size: 24px; color: var(--error);
+        }
+        .popup-btn {
+            margin-top: 20px; padding: 10px 30px; border: none;
+            background: var(--metal-bg); border-radius: 12px;
+            box-shadow: 4px 4px 8px var(--metal-shadow), -4px -4px 8px var(--metal-light);
+            font-weight: 700; color: var(--text-color); cursor: pointer;
+        }
+
+        /* --- FULLSCREEN OVERLAY --- */
+        #master-overlay {
+            position: fixed; inset: 0; background: var(--metal-bg);
+            z-index: 99999; display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        #rain-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .content-wrapper { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .success-box { width: 110px; height: 110px; background: var(--metal-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 15px 15px 30px var(--metal-shadow), -15px -15px 30px var(--metal-light); animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; margin-bottom: 25px; }
+        .success-box i { font-size: 45px; color: var(--accent); }
+        @keyframes popUp { 0% { transform: scale(0) rotate(-45deg); opacity: 0; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+
+        .particle { position: absolute; top: -20px; border-radius: 2px; animation: fallAndSway linear forwards; }
+        @keyframes fallAndSway { 0% { top: -5%; transform: translateX(0) rotate(0deg); opacity: 1; } 100% { top: 110%; transform: translateX(0) rotate(360deg); opacity: 0; } }
+        .spinner { width: 70px; height: 70px; border-radius: 50%; background: var(--metal-bg); box-shadow: 8px 8px 16px var(--metal-shadow), -8px -8px 16px var(--metal-light); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .spinner::after { content: ''; width: 45px; height: 45px; border-radius: 50%; border: 4px solid transparent; border-top-color: var(--accent); animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- OTP MODAL STYLES --- */
+        #otp-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px); z-index: 500000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .otp-card {
+            width: 85%; max-width: 310px; background: var(--metal-bg);
+            padding: 30px 20px; border-radius: 30px; text-align: center;
+            box-shadow: 20px 20px 40px var(--metal-shadow), -20px -20px 40px var(--metal-light);
+        }
+        .otp-input-group { display: flex; gap: 10px; justify-content: center; margin: 25px 0; }
+        .otp-input {
+            width: 45px; height: 50px; border: none; background: var(--metal-bg);
+            border-radius: 12px; text-align: center; font-size: 20px; font-weight: 700;
+            box-shadow: inset 4px 4px 8px var(--metal-shadow), inset -4px -4px 8px var(--metal-light);
+            outline: none; color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animate">
+        <div class="blob" style="top: 10%; left: 10%;"></div>
+        <div class="blob" style="bottom: 10%; right: 10%; animation-delay: -5s;"></div>
+    </div>
+
+    <!-- OTP POPUP -->
+    <div id="otp-overlay">
+        <div class="otp-card">
+            <div class="logo-icon" style="animation:none; box-shadow:none;"><i class="fas fa-sms" style="color:var(--accent)"></i></div>
+            <h3 style="font-size: 16px; color: #444;">Verify OTP</h3>
+            <p style="font-size: 11px; color: #888; margin-top: 5px;">We've sent a 4-digit code to your number.</p>
+            <div class="otp-input-group">
+                <input type="number" class="otp-input" id="o1" oninput="moveFocus(this, 'o2')">
+                <input type="number" class="otp-input" id="o2" oninput="moveFocus(this, 'o3')">
+                <input type="number" class="otp-input" id="o3" oninput="moveFocus(this, 'o4')">
+                <input type="number" class="otp-input" id="o4" oninput="autoVerify()">
+            </div>
+            <button class="submit-btn" style="background:var(--accent)" onclick="manualVerify()">Verify Now</button>
+            <p style="margin-top:15px; font-size:10px; color:#aaa; cursor:pointer" onclick="location.reload()">Cancel</p>
+        </div>
+    </div>
+
+    <div id="popup-overlay">
+        <div class="popup-card" id="popup-card">
+            <div class="popup-icon-box"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 style="font-size: 16px; color: #444; margin-bottom: 8px;">Alert</h3>
+            <p id="popup-msg" style="font-size: 13px; color: #666; line-height: 1.5;"></p>
+            <button class="popup-btn" onclick="closePopup()">OKAY</button>
+        </div>
+    </div>
+
+    <div id="master-overlay">
+        <div id="rain-container"></div>
+        <div id="success-part" class="content-wrapper">
+            <div class="success-box"><i class="fas fa-check-double"></i></div>
+            <h2 id="overlay-msg" style="letter-spacing: 3px; color: #444; text-transform: uppercase; font-size: 19px;">Success</h2>
+            <p id="overlay-submsg" style="color: #888; margin-top: 10px; font-size: 13px;">Welcome to Elite Pro</p>
+        </div>
+        <div id="loader-part" class="content-wrapper" style="display: none;">
+            <div class="spinner"></div>
+            <p style="font-size: 10px; font-weight: 700; color: #777; letter-spacing: 2px; text-transform: uppercase;">Syncing Data...</p>
+        </div>
+    </div>
+
+    <div class="auth-container" id="main-card">
+        <div class="logo-section">
+            <div class="logo-icon"><i class="fas fa-user-shield"></i></div>
+            <h2 style="font-size: 15px; color: #444; letter-spacing: 1.5px; margin-bottom: 20px; text-align: center;">ELITE PRO</h2>
+        </div>
+        <div class="auth-tabs">
+            <button class="tab-btn active" onclick="switchTab('login')">LOGIN</button>
+            <button class="tab-btn" onclick="switchTab('signup')">SIGNUP</button>
+        </div>
+
+        <div id="login-form" class="form-section active">
+            <input type="text" id="l-id" class="input-box" placeholder="Phone Number" style="margin-bottom:15px">
+            <input type="password" id="l-pass" class="input-box" placeholder="••••••••" style="margin-bottom:15px">
+            <button class="submit-btn" id="btn-login-trigger">Login Access</button>
+        </div>
+
+        <div id="signup-form" class="form-section">
+            <input type="text" id="s-name" class="input-box" placeholder="Full Name" style="margin-bottom:12px">
+            <input type="number" id="s-phone" class="input-box" placeholder="WhatsApp Number" style="margin-bottom:12px">
+            <input type="email" id="s-email" class="input-box" placeholder="Email Address" style="margin-bottom:12px">
+            <input type="text" id="s-invite" class="input-box" placeholder="Invite Code (Optional)" style="margin-bottom:12px">
+            <input type="password" id="s-pass" class="input-box" placeholder="Password" style="margin-bottom:12px">
+            <button class="submit-btn" id="btn-signup-trigger" style="background: var(--accent);">Get Started</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, get, update, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUv-QHXMF1vfI7faSTOcQ6WdtZgXjkdGM",
+            authDomain: "elite-pro-de7e8.firebaseapp.com",
+            databaseURL: "https://elite-pro-de7e8-default-rtdb.firebaseio.com",
+            projectId: "elite-pro-de7e8",
+            storageBucket: "elite-pro-de7e8.firebasestorage.app",
+            messagingSenderId: "651793396398",
+            appId: "1:651793396398:web:0148327f711c3062a7733f"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let generatedOTP = "";
+        let pendingAction = null; 
+
+        window.showAlert = (msg) => {
+            const overlay = document.getElementById('popup-overlay');
+            const card = document.getElementById('popup-card');
+            document.getElementById('popup-msg').innerText = msg;
+            overlay.style.display = 'flex';
+            setTimeout(() => card.classList.add('show'), 10);
+        };
+
+        window.closePopup = () => {
+            const overlay = document.getElementById('popup-overlay');
+            const card = document.getElementById('popup-card');
+            card.classList.remove('show');
+            setTimeout(() => overlay.style.display = 'none', 300);
+        };
+
+        function runMasterTransition(title, subtitle, phone) {
+            localStorage.setItem('userPhone', phone);
+            const overlay = document.getElementById('master-overlay');
+            const rainContainer = document.getElementById('rain-container');
+            const successPart = document.getElementById('success-part');
+            const loaderPart = document.getElementById('loader-part');
+            document.getElementById('overlay-msg').innerText = title;
+            document.getElementById('overlay-submsg').innerText = subtitle;
+            overlay.style.display = 'flex';
+            rainContainer.innerHTML = ''; 
+            const colors = ['#f1c40f', '#2ecc71', '#3498db', '#e74c3c', '#ffffff'];
+            for(let i=0; i<80; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 8 + 6 + 'px';
+                p.style.width = size; p.style.height = size;
+                p.style.left = Math.random() * 100 + '%';
+                p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                p.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                rainContainer.appendChild(p);
+            }
+            setTimeout(() => {
+                successPart.style.display = 'none';
+                loaderPart.style.display = 'flex';
+                setTimeout(() => window.location.href = "room.html", 2500);
+            }, 2500);
+        }
+
+        window.switchTab = (type) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+            if(type === 'login') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('login-form').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('signup-form').classList.add('active');
+            }
+        };
+
+        window.moveFocus = (curr, nextId) => {
+            if(curr.value.length >= 1) document.getElementById(nextId).focus();
+        };
+
+        window.sendRealSMS = async (phone) => {
+            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+            const apiKey = "5VIbO7wpMPuqFrnWGBJjEvCT6Yk4xo30ifaLscZRQD2mKydhN8XKGVFhLNdtyWHm1TQMv9EZ2lafC8cq";
+            
+            // Console log for testing if SMS delivery fails
+            console.log("MOBILE OTP IS: " + generatedOTP);
+
+            const targetUrl = `https://www.fast2sms.com/dev/otp?authorization=${apiKey}&variables_values=${generatedOTP}&route=otp&numbers=${phone}`;
+            // GitHub Pages Bypass Proxy
+            const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl);
+
+            try {
+                fetch(proxyUrl); // Silent request through proxy
+                document.getElementById('otp-overlay').style.display = 'flex';
+                document.getElementById('o1').focus();
+                return true;
+            } catch(e) {
+                document.getElementById('otp-overlay').style.display = 'flex';
+                return true;
+            }
+        };
+
+        window.autoVerify = () => {
+            const code = document.getElementById('o1').value + document.getElementById('o2').value + document.getElementById('o3').value + document.getElementById('o4').value;
+            if(code.length === 4) window.manualVerify();
+        };
+
+        window.manualVerify = () => {
+            const code = document.getElementById('o1').value + document.getElementById('o2').value + document.getElementById('o3').value + document.getElementById('o4').value;
+            if(code === generatedOTP) {
+                document.getElementById('otp-overlay').style.display = 'none';
+                if(pendingAction) pendingAction();
+            } else {
+                showAlert("Invalid OTP code!");
+                document.querySelectorAll('.otp-input').forEach(i => i.value = "");
+                document.getElementById('o1').focus();
+            }
+        };
+
+        document.getElementById('btn-signup-trigger').onclick = async () => {
+            const name = document.getElementById('s-name').value.trim();
+            const email = document.getElementById('s-email').value.trim();
+            const phone = document.getElementById('s-phone').value.trim();
+            const inviteUsed = document.getElementById('s-invite').value.trim();
+            const pass = document.getElementById('s-pass').value;
+
+            if(!name || !email || !phone || !pass) return showAlert("Fill all required fields!");
+            if(!/^[6789]\d{9}$/.test(phone)) return showAlert("Enter valid 10-digit number!");
+
+            const userRef = ref(db, `users/${phone}`);
+            const snap = await get(userRef);
+            if(snap.exists()) return showAlert("Number already registered!");
+
+            pendingAction = () => finalizeSignup(name, email, phone, inviteUsed, pass);
+            window.sendRealSMS(phone);
+        };
+
+        async function finalizeSignup(name, email, phone, inviteUsed, pass) {
+            try {
+                const configSnap = await get(ref(db, 'admin_settings/invite_config'));
+                const config = configSnap.val() || { refer_bonus: 0, referrer_bonus: 0 };
+                let welcomeAmount = 0;
+                const myKeyID = "EP-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+                const myProID = Math.floor(10000 + Math.random() * 90000);
+
+                if(inviteUsed) {
+                    const usersSnap = await get(ref(db, 'users'));
+                    const allUsers = usersSnap.val();
+                    let referrerPhone = null;
+                    for(let p in allUsers) {
+                        if(allUsers[p].profile && String(allUsers[p].profile.proID) === String(inviteUsed)) {
+                            referrerPhone = p; break;
+                        }
+                    }
+                    if(referrerPhone) {
+                        const ownerWalletRef = ref(db, `users/${referrerPhone}/wallet`);
+                        const ownerSnap = await get(ownerWalletRef);
+                        const ownerData = ownerSnap.val() || {};
+                        await update(ownerWalletRef, { invite_bal: (Number(ownerData.invite_bal) || 0) + Number(config.referrer_bonus) });
+                        await push(ref(db, `users/${referrerPhone}/invited_users`), { name, phone, date: new Date().toLocaleDateString() });
+                        welcomeAmount = Number(config.refer_bonus);
+                    }
+                }
+
+                await set(ref(db, `users/${phone}`), {
+                    profile: { name, email, phone, keyID: myKeyID, proID: myProID, inviteCode: inviteUsed || "", wins: 0 },
+                    wallet: { total_bal: welcomeAmount, dep_bal: welcomeAmount, win_bal: 0, invite_bal: 0 },
+                    password: pass,
+                    created_at: new Date().toISOString()
+                });
+                await set(ref(db, `key_lookup/${myKeyID}`), phone);
+                await set(ref(db, `email_lookup/${email.replace(/\./g, '_')}`), phone);
+                runMasterTransition("Account Created", "KeyID: " + myKeyID, phone);
+            } catch(e) { showAlert("Signup Error!"); }
+        }
+
+        document.getElementById('btn-login-trigger').onclick = async () => {
+            const id = document.getElementById('l-id').value.trim();
+            const pass = document.getElementById('l-pass').value;
+            if(!id || !pass) return showAlert("Enter login details!");
+
+            try {
+                let targetPhone = id;
+                if(id.includes('@')) {
+                    const emailSnap = await get(ref(db, `email_lookup/${id.replace(/\./g, '_')}`));
+                    if(!emailSnap.exists()) return showAlert("User not found!");
+                    targetPhone = emailSnap.val();
+                }
+
+                const userRef = ref(db, `users/${targetPhone}`);
+                const userSnap = await get(userRef);
+
+                if(userSnap.exists()) {
+                    const userData = userSnap.val();
+                    if(userData.password === pass) {
+                        pendingAction = () => runMasterTransition("Login Success", "Welcome Back!", targetPhone);
+                        window.sendRealSMS(targetPhone);
+                    } else showAlert("Wrong Password!");
+                } else showAlert("User not found!");
+            } catch (e) { showAlert("Login Server Error!"); }
+        };
+    </script>
+</body>
+</html>
