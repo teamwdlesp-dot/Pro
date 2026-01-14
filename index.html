@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ELITE PRO | AUTH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+<script>
+    if (localStorage.getItem('userPhone')) {
+        window.location.href = "room.html";
+    }
+</script>
+
+    <style>
+        :root {
+            --metal-bg: #e0e0e0;
+            --metal-shadow: #bebebe;
+            --metal-light: #ffffff;
+            --text-color: #444;
+            --accent: #2ecc71;
+            --error: #e74c3c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+
+        body { 
+            background-color: var(--metal-bg);
+            height: 100vh; width: 100vw;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; margin: 0;
+            position: relative;
+        }
+
+        .bg-animate { position: absolute; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .blob {
+            position: absolute; width: 300px; height: 300px;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(52, 152, 219, 0.1));
+            filter: blur(50px); border-radius: 50%;
+            animation: move 20s infinite alternate;
+        }
+        @keyframes move { from { transform: translate(-20%, -20%); } to { transform: translate(120%, 120%); } }
+
+        .auth-container {
+            width: 90%; max-width: 340px; background: var(--metal-bg);
+            padding: 30px 20px; border-radius: 30px;
+            box-shadow: 15px 15px 30px var(--metal-shadow), -15px -15px 30px var(--metal-light);
+            z-index: 5; text-align: center;
+            animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .logo-icon {
+            width: 55px; height: 55px; background: var(--metal-bg);
+            margin: 0 auto 15px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 6px 6px 12px var(--metal-shadow), -6px -6px 12px var(--metal-light);
+            color: var(--text-color); font-size: 22px;
+            animation: rotateLogo 10s linear infinite;
+        }
+        @keyframes rotateLogo { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+
+        .auth-tabs {
+            display: flex; background: var(--metal-bg); padding: 4px; border-radius: 15px;
+            box-shadow: inset 4px 4px 8px var(--metal-shadow), inset -4px -4px 8px var(--metal-light);
+            margin-bottom: 25px;
+        }
+        .tab-btn {
+            flex: 1; padding: 12px; border: none; border-radius: 12px;
+            background: transparent; color: #888; font-weight: 700; font-size: 11px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn.active {
+            background: var(--metal-bg); color: var(--text-color);
+            box-shadow: 3px 3px 6px var(--metal-shadow), -3px -3px 6px var(--metal-light);
+        }
+
+        .form-section { display: none; text-align: left; }
+        .form-section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(15px); } to { opacity: 1; transform: translateX(0); } }
+
+        .input-box {
+            width: 100%; padding: 14px 18px; border: none; outline: none;
+            background: var(--metal-bg); border-radius: 15px;
+            box-shadow: inset 5px 5px 10px var(--metal-shadow), inset -5px -5px 10px var(--metal-light);
+            margin-top: 5px; font-weight: 600; color: #444; font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .input-box:focus { box-shadow: 5px 5px 10px var(--metal-shadow), -5px -5px 10px var(--metal-light); transform: translateY(-2px); }
+
+        .submit-btn {
+            position: relative; overflow: hidden;
+            width: 100%; padding: 15px; border: none; border-radius: 15px;
+            background: #333; color: white; font-weight: 700;
+            text-transform: uppercase; margin-top: 10px; cursor: pointer;
+            box-shadow: 5px 5px 15px var(--metal-shadow); font-size: 13px;
+        }
+        .submit-btn:active { transform: scale(0.98); }
+
+        /* --- OTP OVERLAY --- */
+        #otp-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px); z-index: 500000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .otp-card {
+            width: 85%; max-width: 310px; background: var(--metal-bg);
+            padding: 30px 20px; border-radius: 30px; text-align: center;
+            box-shadow: 20px 20px 40px var(--metal-shadow), -20px -20px 40px var(--metal-light);
+        }
+        .otp-input-group { display: flex; gap: 10px; justify-content: center; margin: 25px 0; }
+        .otp-input {
+            width: 45px; height: 50px; border: none; background: var(--metal-bg);
+            border-radius: 12px; text-align: center; font-size: 20px; font-weight: 700;
+            box-shadow: inset 4px 4px 8px var(--metal-shadow), inset -4px -4px 8px var(--metal-light);
+            outline: none; color: var(--accent);
+        }
+
+        #popup-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px); z-index: 200000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .popup-card {
+            width: 80%; max-width: 280px; background: var(--metal-bg);
+            padding: 25px; border-radius: 25px; text-align: center;
+            box-shadow: 20px 20px 40px var(--metal-shadow), -20px -20px 40px var(--metal-light);
+            transform: scale(0.7); opacity: 0; transition: 0.3s;
+        }
+        .popup-card.show { transform: scale(1); opacity: 1; }
+
+        #master-overlay {
+            position: fixed; inset: 0; background: var(--metal-bg);
+            z-index: 99999; display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        .success-box { width: 110px; height: 110px; background: var(--metal-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 15px 15px 30px var(--metal-shadow), -15px -15px 30px var(--metal-light); margin-bottom: 25px; }
+        .success-box i { font-size: 45px; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animate">
+        <div class="blob" style="top: 10%; left: 10%;"></div>
+        <div class="blob" style="bottom: 10%; right: 10%; animation-delay: -5s;"></div>
+    </div>
+
+    <!-- OTP POPUP -->
+    <div id="otp-overlay">
+        <div class="otp-card">
+            <div class="logo-icon" style="animation:none; box-shadow:none;"><i class="fas fa-sms" style="color:var(--accent)"></i></div>
+            <h3 style="font-size: 16px; color: #444;">Verify OTP</h3>
+            <p style="font-size: 11px; color: #888; margin-top: 5px;">A 4-digit code sent to your number.</p>
+            <div class="otp-input-group">
+                <input type="number" class="otp-input" id="o1" oninput="if(this.value.length>1)this.value=this.value.slice(0,1); moveFocus(this, 'o2')">
+                <input type="number" class="otp-input" id="o2" oninput="if(this.value.length>1)this.value=this.value.slice(0,1); moveFocus(this, 'o3')">
+                <input type="number" class="otp-input" id="o3" oninput="if(this.value.length>1)this.value=this.value.slice(0,1); moveFocus(this, 'o4')">
+                <input type="number" class="otp-input" id="o4" oninput="if(this.value.length>1)this.value=this.value.slice(0,1); autoVerify()">
+            </div>
+            <button class="submit-btn" style="background:var(--accent)" onclick="manualVerify()">Verify Now</button>
+            <p style="margin-top:15px; font-size:10px; color:#aaa; cursor:pointer" onclick="location.reload()">Cancel</p>
+        </div>
+    </div>
+
+    <!-- ALERT POPUP -->
+    <div id="popup-overlay">
+        <div class="popup-card" id="popup-card">
+            <div class="logo-icon" style="animation:none; box-shadow:none; font-size:24px; color:var(--error);"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 style="font-size: 16px; color: #444; margin-bottom: 8px;">Alert</h3>
+            <p id="popup-msg" style="font-size: 13px; color: #666; line-height: 1.5;"></p>
+            <button class="submit-btn" onclick="closePopup()">OKAY</button>
+        </div>
+    </div>
+
+    <!-- MASTER OVERLAY -->
+    <div id="master-overlay">
+        <div style="text-align: center;">
+            <div class="success-box"><i class="fas fa-check-double"></i></div>
+            <h2 id="overlay-msg" style="letter-spacing: 2px; color: #444; text-transform: uppercase; font-size: 18px;">Success</h2>
+            <p id="overlay-submsg" style="color: #888; margin-top: 10px; font-size: 12px;">Welcome to Elite Pro</p>
+        </div>
+    </div>
+
+    <div class="auth-container" id="main-card">
+        <div class="logo-section">
+            <div class="logo-icon"><i class="fas fa-user-shield"></i></div>
+            <h2 style="font-size: 15px; color: #444; letter-spacing: 1.5px; margin-bottom: 20px;">ELITE PRO</h2>
+        </div>
+        <div class="auth-tabs">
+            <button class="tab-btn active" onclick="switchTab('login')">LOGIN</button>
+            <button class="tab-btn" onclick="switchTab('signup')">SIGNUP</button>
+        </div>
+
+        <div id="login-form" class="form-section active">
+            <input type="number" id="l-id" class="input-box" placeholder="Phone Number" style="margin-bottom:15px">
+            <input type="password" id="l-pass" class="input-box" placeholder="••••••••" style="margin-bottom:15px">
+            <button class="submit-btn" id="btn-login-trigger">Login Access</button>
+        </div>
+
+        <div id="signup-form" class="form-section">
+            <input type="text" id="s-name" class="input-box" placeholder="Full Name" style="margin-bottom:12px">
+            <input type="number" id="s-phone" class="input-box" placeholder="WhatsApp Number" style="margin-bottom:12px">
+            <input type="email" id="s-email" class="input-box" placeholder="Email Address" style="margin-bottom:12px">
+            <input type="text" id="s-invite" class="input-box" placeholder="Invite Code (Optional)" style="margin-bottom:12px">
+            <input type="password" id="s-pass" class="input-box" placeholder="Password" style="margin-bottom:12px">
+            <button class="submit-btn" id="btn-signup-trigger" style="background: var(--accent);">Get Started</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, get, update, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUv-QHXMF1vfI7faSTOcQ6WdtZgXjkdGM",
+            authDomain: "elite-pro-de7e8.firebaseapp.com",
+            databaseURL: "https://elite-pro-de7e8-default-rtdb.firebaseio.com",
+            projectId: "elite-pro-de7e8",
+            storageBucket: "elite-pro-de7e8.firebasestorage.app",
+            messagingSenderId: "651793396398",
+            appId: "1:651793396398:web:0148327f711c3062a7733f"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let generatedOTP = "";
+        let pendingAction = null; 
+
+        window.showAlert = (msg) => {
+            document.getElementById('popup-msg').innerText = msg;
+            document.getElementById('popup-overlay').style.display = 'flex';
+            setTimeout(() => document.getElementById('popup-card').classList.add('show'), 10);
+        };
+        window.closePopup = () => {
+            document.getElementById('popup-card').classList.remove('show');
+            setTimeout(() => document.getElementById('popup-overlay').style.display = 'none', 300);
+        };
+        window.switchTab = (type) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+            if(type === 'login') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('login-form').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('signup-form').classList.add('active');
+            }
+        };
+
+        window.moveFocus = (curr, nextId) => { if(curr.value.length >= 1) document.getElementById(nextId).focus(); };
+
+        // --- GITHUB PAGES CORS PROXY SMS ---
+        window.sendRealSMS = async (phone) => {
+            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+            const apiKey = "5VIbO7wpMPuqFrnWGBJjEvCT6Yk4xo30ifaLscZRQD2mKydhN8XKGVFhLNdtyWHm1TQMv9EZ2lafC8cq";
+            
+            console.log("%c OTP: " + generatedOTP, "color: #2ecc71; font-size: 20px; font-weight: bold; background: #222; padding: 10px; border-radius: 5px;");
+
+            const targetUrl = `https://www.fast2sms.com/dev/otp?authorization=${apiKey}&variables_values=${generatedOTP}&route=otp&numbers=${phone}`;
+            const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
+
+            document.getElementById('otp-overlay').style.display = 'flex';
+            document.getElementById('o1').focus();
+
+            try {
+                fetch(proxyUrl); // Execute proxied request
+            } catch(e) { console.warn("Proxy Fetch Failed"); }
+        };
+
+        window.autoVerify = () => {
+            const code = document.getElementById('o1').value + document.getElementById('o2').value + document.getElementById('o3').value + document.getElementById('o4').value;
+            if(code.length === 4) window.manualVerify();
+        };
+
+        window.manualVerify = () => {
+            const code = document.getElementById('o1').value + document.getElementById('o2').value + document.getElementById('o3').value + document.getElementById('o4').value;
+            if(code === generatedOTP) {
+                document.getElementById('otp-overlay').style.display = 'none';
+                if(pendingAction) pendingAction();
+            } else {
+                showAlert("Incorrect OTP code!");
+                document.querySelectorAll('.otp-input').forEach(i => i.value = "");
+                document.getElementById('o1').focus();
+            }
+        };
+
+        function runMasterTransition(title, subtitle, phone) {
+            localStorage.setItem('userPhone', phone);
+            document.getElementById('overlay-msg').innerText = title;
+            document.getElementById('overlay-submsg').innerText = subtitle;
+            document.getElementById('master-overlay').style.display = 'flex';
+            setTimeout(() => window.location.href = "room.html", 2500);
+        }
+
+        document.getElementById('btn-signup-trigger').onclick = async () => {
+            const name = document.getElementById('s-name').value.trim();
+            const email = document.getElementById('s-email').value.trim();
+            const phone = document.getElementById('s-phone').value.trim();
+            const inviteUsed = document.getElementById('s-invite').value.trim();
+            const pass = document.getElementById('s-pass').value;
+
+            if(!name || !email || !phone || !pass) return showAlert("Fill all fields!");
+            if(!/^[6789]\d{9}$/.test(phone)) return showAlert("Enter 10-digit number!");
+
+            const userRef = ref(db, `users/${phone}`);
+            const snap = await get(userRef);
+            if(snap.exists()) return showAlert("Number already registered!");
+
+            pendingAction = () => finalizeSignup(name, email, phone, inviteUsed, pass);
+            window.sendRealSMS(phone);
+        };
+
+        async function finalizeSignup(name, email, phone, inviteUsed, pass) {
+            try {
+                const configSnap = await get(ref(db, 'admin_settings/invite_config'));
+                const config = configSnap.val() || { refer_bonus: 0, referrer_bonus: 0 };
+                let welcomeAmount = 0;
+                const myKeyID = "EP-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+                const myProID = Math.floor(10000 + Math.random() * 90000);
+
+                if(inviteUsed) {
+                    const usersSnap = await get(ref(db, 'users'));
+                    const allUsers = usersSnap.val();
+                    let referrerPhone = null;
+                    for(let p in allUsers) {
+                        if(allUsers[p].profile && String(allUsers[p].profile.proID) === String(inviteUsed)) {
+                            referrerPhone = p; break;
+                        }
+                    }
+                    if(referrerPhone) {
+                        const ownerWalletRef = ref(db, `users/${referrerPhone}/wallet`);
+                        const ownerSnap = await get(ownerWalletRef);
+                        const ownerData = ownerSnap.val() || {};
+                        await update(ownerWalletRef, { invite_bal: (Number(ownerData.invite_bal) || 0) + Number(config.referrer_bonus) });
+                        await push(ref(db, `users/${referrerPhone}/invited_users`), { name, phone, date: new Date().toLocaleDateString() });
+                        welcomeAmount = Number(config.refer_bonus);
+                    }
+                }
+
+                await set(ref(db, `users/${phone}`), {
+                    profile: { name, email, phone, keyID: myKeyID, proID: myProID, inviteCode: inviteUsed || "", wins: 0 },
+                    wallet: { total_bal: welcomeAmount, dep_bal: welcomeAmount, win_bal: 0, invite_bal: 0 },
+                    password: pass,
+                    created_at: new Date().toISOString()
+                });
+                await set(ref(db, `key_lookup/${myKeyID}`), phone);
+                await set(ref(db, `email_lookup/${email.replace(/\./g, '_')}`), phone);
+                runMasterTransition("Account Created", "KeyID: " + myKeyID, phone);
+            } catch(e) { showAlert("Signup Error!"); }
+        }
+
+        document.getElementById('btn-login-trigger').onclick = async () => {
+            const id = document.getElementById('l-id').value.trim();
+            const pass = document.getElementById('l-pass').value;
+            if(!id || !pass) return showAlert("Enter login details!");
+
+            const userSnap = await get(ref(db, `users/${id}`));
+            if(userSnap.exists()) {
+                if(userSnap.val().password === pass) {
+                    pendingAction = () => runMasterTransition("Login Success", "Welcome Back!", id);
+                    window.sendRealSMS(id);
+                } else showAlert("Wrong Password!");
+            } else showAlert("User not found!");
+        };
+    </script>
+</body>
+</html>
